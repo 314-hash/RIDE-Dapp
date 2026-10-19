@@ -102,7 +102,7 @@ export function Faq({ items }: { items: { q: string; a: ReactNode }[] }) {
   );
 }
 
-export function Field({ label, error, id, children, hint }: { label: string; error?: string; id: string; children: ReactNode; hint?: string }) {
+export function Field({ label, error, id, children, hint }: { label: string; error?: string | undefined; id: string; children: ReactNode; hint?: string | undefined }) {
   return (
     <div>
       <label htmlFor={id} className="mb-1.5 block text-sm font-medium">{label}</label>
