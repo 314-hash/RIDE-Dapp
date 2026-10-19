@@ -15,9 +15,13 @@ export const btn = {
 
 export function Wordmark({ className, inverted }: { className?: string; inverted?: boolean }) {
   return (
-    <Link to="/" className={cn("flex items-center gap-2 font-bold tracking-tight", className)} aria-label="RIDE TOKENS home">
-      <span className="grid h-8 w-8 place-items-center rounded-lg bg-primary text-sm font-black italic text-primary-foreground">R</span>
-      <span className={cn("text-lg", inverted ? "text-ink-foreground" : "text-foreground")}>
+    <Link to="/" className={cn("flex items-center gap-2.5 font-bold tracking-tight", className)} aria-label="RIDE TOKENS home">
+      <img
+        src="/ride-token-logo.jpg"
+        alt="RIDE TOKEN on Sidra Chain logo"
+        className="h-9 w-9 rounded-full object-cover ring-2 ring-primary/50 shadow-soft"
+      />
+      <span className={cn("text-lg font-extrabold", inverted ? "text-ink-foreground" : "text-foreground")}>
         RIDE <span className="text-primary">TOKENS</span>
       </span>
     </Link>
