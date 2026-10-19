@@ -1,0 +1,530 @@
+{
+  "contractName": "DriverStakingVault",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_rideToken",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [],
+      "name": "ContractPaused",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "unlockTimestamp",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "currentTimestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "CooldownActive",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ExistingCooldownPending",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InsufficientStake",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "NoPendingUnstake",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "TransferFailed",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "Unauthorized",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ZeroAddress",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ZeroAmount",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "isPaused",
+          "type": "bool"
+        }
+      ],
+      "name": "PausedStateChanged",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "driver",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "newTotalStake",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "enum DriverStakingVault.DriverTier",
+          "name": "tier",
+          "type": "uint8"
+        }
+      ],
+      "name": "Staked",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "driver",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amountRestored",
+          "type": "uint256"
+        }
+      ],
+      "name": "UnstakeCancelled",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "driver",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "unlockTime",
+          "type": "uint256"
+        }
+      ],
+      "name": "UnstakeRequested",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "driver",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "remainingStake",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "enum DriverStakingVault.DriverTier",
+          "name": "newTier",
+          "type": "uint8"
+        }
+      ],
+      "name": "Unstaked",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "BPS_DENOMINATOR",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "DIAMOND_FEE_BPS",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "DIAMOND_THRESHOLD",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "GOLD_FEE_BPS",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "GOLD_THRESHOLD",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "SILVER_FEE_BPS",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "SILVER_THRESHOLD",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "STANDARD_FEE_BPS",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "UNSTAKE_COOLDOWN",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "cancelUnstake",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "driverStakes",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "stakedAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "unlockTimestamp",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "pendingUnstakeAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "totalLifetimeEarnings",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "lastStakedTimestamp",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "finalizeUnstake",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "driver",
+          "type": "address"
+        }
+      ],
+      "name": "getDriverFeeBps",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "driver",
+          "type": "address"
+        }
+      ],
+      "name": "getDriverTier",
+      "outputs": [
+        {
+          "internalType": "enum DriverStakingVault.DriverTier",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "driver",
+          "type": "address"
+        }
+      ],
+      "name": "getStakeInfo",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "activeStake",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "pendingUnstake",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "unlockTimestamp",
+          "type": "uint256"
+        },
+        {
+          "internalType": "enum DriverStakingVault.DriverTier",
+          "name": "tier",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint256",
+          "name": "feeBps",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "paused",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "requestUnstake",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "rideToken",
+      "outputs": [
+        {
+          "internalType": "contract IERC20",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bool",
+          "name": "_paused",
+          "type": "bool"
+        }
+      ],
+      "name": "setPaused",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "stake",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "totalStakedTokens",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "60a060405234801561000f575f80fd5b50604051610dce380380610dce83398101604081905261002e9161007c565b6001600160a01b0381166100555760405163d92e233d60e01b815260040160405180910390fd5b6001600160a01b03166080525f80546001600160a01b0319163317905560016003556100a9565b5f6020828403121561008c575f80fd5b81516001600160a01b03811681146100a2575f80fd5b9392505050565b608051610cff6100cf5f395f818161031a01528181610418015261092b0152610cff5ff3fe608060405234801561000f575f80fd5b506004361061013d575f3560e01c80635c975abb116100b4578063bf224fcd11610079578063bf224fcd1461026c578063c1a0db3014610275578063c345315314610285578063d9a05c9f146102a9578063e1a452181461030c578063fa69b8aa14610315575f80fd5b80635c975abb146101f057806377655955146102135780638da5cb5b14610226578063a694fc3a14610250578063bdfb148b14610263575f80fd5b80633ae73259116101055780633ae732591461019e5780633da78213146101a757806341fd0ec9146101c75780634ab17969146101d05780634ac70dc0146101d857806356973974146101e0575f80fd5b80630b60c58f146101415780630b8df9f11461015e5780630ea943411461016e57806316c38b3c14610178578063230957211461018b575b5f80fd5b61014b6202a30081565b6040519081526020015b60405180910390f35b61014b680d8d726b7177a8000081565b61017661033c565b005b610176610186366004610b41565b610501565b610176610199366004610b63565b610581565b61014b60025481565b6101ba6101b5366004610b7a565b6106cf565b6040516101559190610bd4565b61014b61025881565b61017661073a565b61014b60c881565b61014b68056bc75e2d6310000081565b5f5461020390600160a01b900460ff1681565b6040519015158152602001610155565b61014b610221366004610b7a565b610816565b5f54610238906001600160a01b031681565b6040516001600160a01b039091168152602001610155565b61017661025e366004610b63565b610895565b61014b6101c281565b61014b61032081565b61014b6802b5e3af16b188000081565b610298610293366004610b7a565b610a48565b604051610155959493929190610be8565b6102e46102b7366004610b7a565b600160208190525f9182526040909120805491810154600282015460038301546004909301549192909185565b604080519586526020860194909452928401919091526060830152608082015260a001610155565b61014b61271081565b6102387f000000000000000000000000000000000000000000000000000000000000000081565b6002600354036103675760405162461bcd60e51b815260040161035e90610c1a565b60405180910390fd5b60026003819055335f90815260016020526040812091820154908190036103a157604051631509a84360e11b815260040160405180910390fd5b81600101544210156103d557600182015460405163181511ab60e31b8152600481019190915242602482015260440161035e565b5f60028084018290556001840182905580548392906103f5908490610c65565b909155505060405163a9059cbb60e01b8152336004820152602481018290525f907f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03169063a9059cbb906044016020604051808303815f875af1158015610466573d5f803e3d5ffd5b505050506040513d601f19601f8201168201806040525081019061048a9190610c78565b9050806104aa576040516312171d8360e31b815260040160405180910390fd5b5f6104b4336106cf565b845460405191925033917f47efae27a70cca1d3ad8e753ab4b48a413e554d244be5c7928fdfee407c37f5d916104ee918791908690610c93565b60405180910390a2505060016003555050565b5f546001600160a01b0316331461052a576040516282b42960e81b815260040160405180910390fd5b5f8054821515600160a01b0260ff60a01b199091161790556040517f9e3a5e37224532dea67b89face185703738a228a6e8a23dee546960180d3be649061057690831515815260200190565b60405180910390a150565b5f54600160a01b900460ff16156105ab5760405163ab35696f60e01b815260040160405180910390fd5b6002600354036105cd5760405162461bcd60e51b815260040161035e90610c1a565b6002600355335f9081526001602052604090208115806105ed5750805482115b1561060b576040516378de4a6960e11b815260040160405180910390fd5b5f81600201541180156106215750806001015442105b1561063f5760405163c161f29f60e01b815260040160405180910390fd5b81815f015f8282546106519190610c65565b9250508190555081816002015f82825461066b9190610cb6565b9091555061067e90506202a30042610cb6565b6001820181905560405133917f57e41df54512c76148b5ba9b643d149752b0d35e493b969bd017d0a3fe5228cf916106be91868252602082015260400190565b60405180910390a250506001600355565b6001600160a01b0381165f90815260016020526040812054680d8d726b7177a8000081106107005750600392915050565b68056bc75e2d6310000081106107195750600292915050565b6802b5e3af16b188000081106107325750600192915050565b505f92915050565b5f54600160a01b900460ff16156107645760405163ab35696f60e01b815260040160405180910390fd5b6002600354036107865760405162461bcd60e51b815260040161035e90610c1a565b60026003819055335f90815260016020526040812091820154908190036107c057604051631509a84360e11b815260040160405180910390fd5b5f600283018190558254829184916107d9908490610cb6565b90915550505f600183015560405181815233907f02fbe69eb5474cc010b6c0c236dd70755556cee48c19373e79147100e04de70b906020016106be565b5f80610821836106cf565b9050600381600381111561083757610837610ba0565b03610845575060c892915050565b600281600381111561085957610859610ba0565b0361086857506101c292915050565b600181600381111561087c5761087c610ba0565b0361088b575061025892915050565b5061032092915050565b5f54600160a01b900460ff16156108bf5760405163ab35696f60e01b815260040160405180910390fd5b6002600354036108e15760405162461bcd60e51b815260040161035e90610c1a565b60026003555f81900361090757604051631f2a200560e01b815260040160405180910390fd5b6040516323b872dd60e01b8152336004820152306024820152604481018290525f907f00000000000000000000000000000000000000000000000000000000000000006001600160a01b0316906323b872dd906064016020604051808303815f875af1158015610979573d5f803e3d5ffd5b505050506040513d601f19601f8201168201806040525081019061099d9190610c78565b9050806109bd576040516312171d8360e31b815260040160405180910390fd5b335f9081526001602052604081208054909184918391906109df908490610cb6565b9091555050426004820155600280548491905f906109fe908490610cb6565b909155505f9050610a0e336106cf565b825460405191925033917f11046f741396910185536955c79ec22a76d04229d188bc13962f8331b81008a9916104ee918891908690610c93565b6001600160a01b0381165f908152600160208181526040808420815160a08101835281548152938101549284019290925260028201549083015260038101546060830152600401546080820152819081908190819081610aa7886106cf565b90505f6003826003811115610abe57610abe610ba0565b14610b0d576002826003811115610ad757610ad7610ba0565b14610b05576001826003811115610af057610af0610ba0565b14610afd57610320610b10565b610258610b10565b6101c2610b10565b60c85b83516040850151602090950151909b949a5098509196509094509092505050565b8015158114610b3e575f80fd5b50565b5f60208284031215610b51575f80fd5b8135610b5c81610b31565b9392505050565b5f60208284031215610b73575f80fd5b5035919050565b5f60208284031215610b8a575f80fd5b81356001600160a01b0381168114610b5c575f80fd5b634e487b7160e01b5f52602160045260245ffd5b60048110610bd057634e487b7160e01b5f52602160045260245ffd5b9052565b60208101610be28284610bb4565b92915050565b858152602081018590526040810184905260a08101610c0a6060830185610bb4565b8260808301529695505050505050565b6020808252601f908201527f5265656e7472616e637947756172643a207265656e7472616e742063616c6c00604082015260600190565b634e487b7160e01b5f52601160045260245ffd5b81810381811115610be257610be2610c51565b5f60208284031215610c88575f80fd5b8151610b5c81610b31565b8381526020810183905260608101610cae6040830184610bb4565b949350505050565b80820180821115610be257610be2610c5156fea2646970667358221220dec464c947188ceb4d472ffda89d3177651cf835edddc6dc0bfb0b8452d2325564736f6c63430008140033"
+}

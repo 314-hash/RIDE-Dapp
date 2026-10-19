@@ -1,0 +1,27 @@
+{
+  "network": "Sidra Chain",
+  "chainId": 97453,
+  "rpc": "https://rpc.sidrachain.com",
+  "deployer": "0x746fe50362Af424aB9C7a56E90099eF25f19217e",
+  "rideToken": "0xe91cAC00C1092611EB598B284a87A623a35aF9b7",
+  "contracts": {
+    "RideBookingEscrow": {
+      "description": "Decentralized fare escrow with 15% RIDE discount & driver payouts",
+      "tokenDiscountBps": 1500,
+      "basePlatformFeeBps": 800
+    },
+    "DriverStakingVault": {
+      "description": "Driver tier staking vault with commission discounts down to 2%",
+      "tiers": {
+        "Silver": "50 RIDE (6% fee)",
+        "Gold": "100 RIDE (4.5% fee)",
+        "Diamond": "250 RIDE (2.0% fee)"
+      }
+    },
+    "RideRewardsDistributor": {
+      "description": "Verified Ride-to-Earn +1.5 RIDE/km cashback rewards distributor",
+      "ratePerKm": "1.5 RIDE"
+    }
+  },
+  "deployedAt": "2026-10-19T07:39:40.353Z"
+}
